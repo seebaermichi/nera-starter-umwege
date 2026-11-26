@@ -21,6 +21,7 @@ facts:
       value: "132 km"
     - label: "Spent"
       value: "€780"
+is_post: true
 ---
 
 The night train from Munich reaches Bolzano at ten to six, which is early enough to watch the station café open and late enough to feel you have earned the first espresso. From there the Dolomites are a network of blue buses that run all year, cost less than a sandwich and are driven by men who greet every passenger by name.

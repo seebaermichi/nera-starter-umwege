@@ -15,6 +15,7 @@ facts:
       value: "Bus"
     - label: "Spent"
       value: "€460"
+is_post: true
 ---
 
 The sun comes up over the dunes at twenty past six. Getting there in time took a night bus from Fes, a shared taxi from Rissani and forty minutes of climbing sand in the dark.

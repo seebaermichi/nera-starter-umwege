@@ -15,6 +15,7 @@ facts:
       value: "Bus"
     - label: "Spent"
       value: "€520"
+is_post: true
 ---
 
 A week in the Troodos hills on local buses that leave when full. The village had nine churches and two cafés, and both cafés closed at four.

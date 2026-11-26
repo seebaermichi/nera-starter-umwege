@@ -15,6 +15,7 @@ facts:
       value: "Ferry"
     - label: "Spent"
       value: "€390"
+is_post: true
 ---
 
 Out of season the island belongs to fishermen and cats. I had a beach of four kilometres to myself and a hotel that opened its kitchen just for me.

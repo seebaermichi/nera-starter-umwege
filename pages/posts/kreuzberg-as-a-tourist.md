@@ -15,6 +15,7 @@ facts:
       value: "Train"
     - label: "Spent"
       value: "€140"
+is_post: true
 ---
 
 Berlin from the elevated line, with a day ticket and no plans. Two days were enough to find three places I would send a friend to.

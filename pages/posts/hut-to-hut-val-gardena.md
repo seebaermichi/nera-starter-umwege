@@ -17,6 +17,7 @@ facts:
       value: "Train and bus"
     - label: "Spent"
       value: "€610"
+is_post: true
 ---
 
 Five nights at 2,400 metres, one of them in a storm. Every hut is a day on foot from the next, and the bus from Bolzano reaches the first one.

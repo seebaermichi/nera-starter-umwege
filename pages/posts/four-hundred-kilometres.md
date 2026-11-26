@@ -15,6 +15,7 @@ facts:
       value: "Shuttle bus"
     - label: "Spent"
       value: "€1,480"
+is_post: true
 ---
 
 Namibia by shuttle bus and on foot. On the road south there is one tree in four hundred kilometres, and every driver stops at it.

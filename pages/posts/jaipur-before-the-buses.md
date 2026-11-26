@@ -15,6 +15,7 @@ facts:
       value: "Train"
     - label: "Spent"
       value: "€1,150"
+is_post: true
 ---
 
 Three weeks in Rajasthan by sleeper train. The fort above the lake opens at eight; the tour buses arrive at half past nine.

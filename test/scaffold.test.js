@@ -47,6 +47,9 @@ const RULES = [
     'seo-jsonld',
 ]
 
+// The canonical link plugin-canonical-links writes into every page.
+const CANONICAL = /<link href="https:\/\/example\.com\/[^"]*" rel="canonical">/g
+
 let tmp
 
 beforeAll(() => {
@@ -103,6 +106,18 @@ const starterFiles = () => STARTER_ENTRIES
         : [e])
 
 const postFiles = () => fs.readdirSync(path.join(root, 'pages', 'posts')).filter((f) => f.endsWith('.md'))
+
+// The JSON-LD graphs of a built page.
+const jsonLd = (page) => [...page.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+    .map(([, json]) => JSON.parse(json))
+
+// Every built page with a BlogPosting node, as paths relative to `pub`.
+const blogPostings = (pub) => walk(pub)
+    .filter((f) => f.endsWith('.html'))
+    .filter((f) => jsonLd(read(pub, f)).some((ld) => ld['@graph'].some((node) => node['@type'] === 'BlogPosting')))
+    .sort()
+
+const builtPosts = () => postFiles().map((f) => `posts/${f.replace(/\.md$/, '.html')}`).sort()
 
 // The values of a post's fact tiles.
 const facts = (page) => [...page.matchAll(/<dd class="post-facts__value">([^<]*)<\/dd>/g)].map(([, value]) => value)
@@ -191,9 +206,33 @@ describe('the starter files', () => {
         expect(starterFiles().filter((f) => f.includes(CACHE))).toEqual([])
     })
 
-    it('run plugin-search last, so the tag pages are indexed', () => {
+    it('ship the canonical-links and structured-data views unedited, included by head-extra', () => {
+        const plugins = path.join(root, 'node_modules', '@nera-static')
+        for (const [plugin, files] of [
+            ['plugin-canonical-links', ['index.pug', 'partials/canonical-link.pug', 'partials/alternate-links.pug']],
+            ['plugin-structured-data', ['index.pug']],
+        ]) {
+            for (const file of files) {
+                expect(read(root, `theme/views/vendor/${plugin}/${file}`), `${plugin}/${file}`)
+                    .toBe(read(path.join(plugins, plugin), `views/${file}`))
+            }
+        }
+        const head = read(root, 'theme/views/partials/head-extra.pug')
+        expect(head).toContain('include /vendor/plugin-canonical-links/index')
+        expect(head).toContain('include /vendor/plugin-structured-data/index')
+    })
+
+    it('name the author, not the site, as the entity, and mark posts by is_post', () => {
+        const data = readYaml(root, 'config/structured-data.yaml')
+        expect(data.entity).toMatchObject({ type: 'Person', name: readYaml(root, 'config/theme.yaml').author.name })
+        expect(data.entity.same_as).toEqual(readYaml(root, 'config/social-media-links.yaml')
+            .social_media_links.map((link) => link.href))
+        expect(data.articles).toEqual({ key: 'is_post' })
+    })
+
+    it('run canonical links, structured data and search after plugin-tags, search last', () => {
         expect(readYaml(root, 'config/plugin-order.yaml')['plugin-order']).toEqual([
-            { end: ['plugin-search'] },
+            { end: ['plugin-canonical-links', 'plugin-structured-data', 'plugin-search'] },
         ])
     })
 
@@ -201,10 +240,13 @@ describe('the starter files', () => {
         for (const file of starterFiles().filter((f) => f.endsWith('.md'))) {
             const front = parse(read(root, file).match(/^---\r?\n([\s\S]*?)\r?\n---/)[1])
             expect(front.layout, file).toBeTruthy()
-            if (file.startsWith(path.join('pages', 'posts'))) expect(front.date, file).toBeTruthy()
+            const isPost = file.startsWith(path.join('pages', 'posts'))
+            if (isPost) expect(front.date, file).toBeTruthy()
             if (front.image) expect(front.image_alt, file).toBeTruthy()
+            // The language-free key config/structured-data.yaml reads.
+            expect(front.is_post, file).toBe(isPost ? true : undefined)
         }
-        expect(postFiles().sort()).toEqual(FIXTURE_POSTS.map((slug) => `${slug}.md`))
+        expect(postFiles().sort()).toEqual([...FIXTURE_POSTS, 'write-a-post'].map((slug) => `${slug}.md`).sort())
         expect(read(root, 'pages/posts/kreuzberg-as-a-tourist.md')).toContain('?ratio=4:3&focus=50,33')
         expect(read(root, 'pages/posts/norwegian-coast-by-ferry.md')).toContain('?ratio=2:1&focus=50,100')
         // plugin-images publishes the variants; the originals keep their full size.
@@ -317,8 +359,10 @@ describe('nera new --starter <this repo>', () => {
         const html = walk(pub).filter((f) => f.endsWith('.html'))
         for (const file of html) {
             const page = read(pub, file)
-            if (file !== 'search.html') expect(page, file).not.toMatch(/<script/i)
-            expect(page, file).not.toMatch(/<(?:link|img|source|iframe|video|audio|script)\b[^>]*\s(?:href|src|srcset)="(?:https?:)?\/\//i)
+            // JSON-LD is data, not a script the browser runs.
+            if (file !== 'search.html') expect(page, file).not.toMatch(/<script(?![^>]*type="application\/ld\+json")/i)
+            // The canonical link names the page's own address, not a request.
+            expect(page.replace(CANONICAL, ''), file).not.toMatch(/<(?:link|img|source|iframe|video|audio|script)\b[^>]*\s(?:href|src|srcset)="(?:https?:)?\/\//i)
         }
         for (const file of walk(pub).filter((f) => f.endsWith('.css'))) {
             expect(read(pub, file), file).not.toMatch(/url\(\s*['"]?(?:https?:)?\/\/|@import/i)
@@ -336,6 +380,68 @@ describe('nera new --starter <this repo>', () => {
                 expect(fs.existsSync(path.join(pub, url)), `${file} → ${url}`).toBe(true)
             }
         }
+    })
+
+    it('gives every page one JSON-LD graph, and a BlogPosting to the posts only', () => {
+        const html = walk(pub).filter((f) => f.endsWith('.html'))
+        expect(html.length).toBeGreaterThan(PAGES.length + FIXTURE_POSTS.length + TAGS.length)
+        for (const file of html) {
+            const graphs = jsonLd(read(pub, file))
+            expect(graphs, file).toHaveLength(1)
+            const [{ '@context': context, '@graph': graph }] = graphs
+            expect(context, file).toBe('https://schema.org')
+            expect(graph[0], file).toMatchObject({
+                '@id': 'https://example.com/#entity', '@type': 'Person', name: 'Lena Sommer',
+                url: 'https://example.com/about.html',
+            })
+            expect(graph[1], file).toMatchObject({ '@type': 'WebSite', name: 'Umwege', inLanguage: 'en' })
+        }
+        expect(blogPostings(pub)).toEqual(builtPosts())
+        expect(builtPosts()).toHaveLength(FIXTURE_POSTS.length + 1)
+
+        const [{ '@graph': graph }] = jsonLd(read(pub, 'posts/dolomites-without-a-car.html'))
+        expect(graph.find((node) => node['@type'] === 'BlogPosting')).toMatchObject({
+            '@id': 'https://example.com/posts/dolomites-without-a-car.html#page',
+            headline: 'Nine days in the Dolomites without a car',
+            datePublished: '2026-11-12T00:00:00Z',
+            dateModified: '2026-11-15T00:00:00Z',
+            author: { '@id': 'https://example.com/#entity' },
+        })
+    })
+
+    it('gives every page an absolute canonical link and lists every indexed page in the sitemap', () => {
+        const html = walk(pub).filter((f) => f.endsWith('.html')).sort()
+        for (const file of html) {
+            const links = read(pub, file).match(CANONICAL)
+            expect(links, file).toEqual([`<link href="https://example.com/${file}" rel="canonical">`])
+        }
+        const sitemap = read(pub, 'sitemap.xml')
+        const locs = [...sitemap.matchAll(/<loc>([^<]*)<\/loc>/g)].map(([, loc]) => loc).sort()
+        // Imprint and privacy set `robots: noindex,follow`, so they stay out.
+        const noindex = ['imprint.html', 'privacy.html']
+        for (const file of noindex) expect(read(pub, file), file).toContain('<meta name="robots" content="noindex,follow">')
+        expect(locs).toEqual(html.filter((file) => !noindex.includes(file)).map((file) => `https://example.com/${file}`))
+        expect(locs).toContain('https://example.com/tags/road-notes.html')
+        expect(read(pub, 'robots.txt')).toContain('Sitemap: https://example.com/sitemap.xml')
+    })
+
+    it('renders "Write your first trip" with every key, outside the home\'s prints, pass, cards and highlight', () => {
+        const post = read(pub, 'posts/write-a-post.html')
+        expect(post).toContain('<p class="post__series">Series: Start here · Part 1</p>')
+        expect(post).toMatch(/<p class="post__location"><svg[\s\S]*?<\/svg>Germany<\/p>/)
+        expect(facts(post)).toEqual(['1 evening', 'Text editor', '1', '€0'])
+        expect(post).not.toContain('class="post__media"')
+        expect(post).toContain('class="post__updated"')
+        expect(post).toContain('<a class="tag-links__item" href="/tags/germany.html">Germany</a>')
+        // The oldest post: no "previous" link, the next one is the fixture's oldest.
+        expect(post).not.toContain('page-pagination__link--previous')
+        expect(post).toContain('page-pagination__link--next" href="/posts/booking-ferries.html"')
+
+        const home = read(pub, 'index.html')
+        expect(home).not.toContain('/posts/write-a-post.html')
+        expect(read(pub, 'tags/germany.html')).toContain('href="/posts/write-a-post.html"')
+        expect(read(pub, 'tags/road-notes.html')).not.toContain('/posts/write-a-post.html')
+        expect(read(pub, 'posts/dolomites-without-a-car.html')).not.toContain('/posts/write-a-post.html')
     })
 
     it('copies only the starter folders into the site, byte for byte', () => {
@@ -387,6 +493,8 @@ describe('nera new --starter <this repo> --name "Brot & Zeit" --lang de', () => 
         expect(home).not.toContain('href="/en/')
         expect(read(pub, 'posts/dolomites-without-a-car.html')).toContain('<html lang="de">')
         expect(read(pub, 'search.html')).toContain('data-search-index="/search-index.json"')
+        // is_post carries no language, so the posts keep their BlogPosting.
+        expect(blogPostings(pub)).toEqual(builtPosts())
         expect(fs.existsSync(path.join(pub, 'feed.xml'))).toBe(true)
         expect(fs.existsSync(path.join(pub, 'tags', 'road-notes.html'))).toBe(true)
     }, TIMEOUT)

@@ -15,6 +15,7 @@ facts:
       value: "Ferry"
     - label: "Spent"
       value: "€1,320"
+is_post: true
 ---
 
 Fourteen days, nine ferries and not one long-distance bus. This post lists them in order, with what each one cost and which cabin was worth it.

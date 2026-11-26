@@ -17,6 +17,7 @@ facts:
       value: "Night train"
     - label: "Spent"
       value: "€430"
+is_post: true
 ---
 
 Too late for skiing, too early for hiking, perfect. The lifts were shut, the huts half open and the buses empty.

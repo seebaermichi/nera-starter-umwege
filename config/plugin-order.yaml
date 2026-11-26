@@ -1,5 +1,8 @@
-# Plugins run alphabetically, except those listed here. plugin-search runs
-# last, so the tag pages plugin-tags adds are in the search index too.
+# Plugins run alphabetically, except those listed here. These run last, so
+# the tag pages plugin-tags adds get a canonical link and structured data
+# too, and are in the search index; plugin-search runs last of all.
 plugin-order:
     - end:
+          - plugin-canonical-links
+          - plugin-structured-data
           - plugin-search
