@@ -1,6 +1,6 @@
 {
     "name": "@nera-static/starter-umwege",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A ready-to-edit Nera travel blog on @nera-static/theme-umwege: fifteen sample posts with trip facts, places and a series, ten photographs, tags, an archive, search, an Atom feed, a sitemap, structured data, canonical links, responsive images, social links and imprint and privacy placeholders.",
     "type": "module",
     "scripts": {

@@ -16,8 +16,8 @@ search, an Atom feed, a sitemap, structured data (a `BlogPosting` per post),
 canonical links, a menu, responsive images, social links and imprint and
 privacy placeholders. The only JavaScript is the search script, on the search
 page; no third-party requests. A fresh site passes `nera build --check` and
-`nera validate` without a single finding, with every rule at `error` except
-`a11y-target-blank`.
+`nera validate` without a single finding, with every rule of `nera check` at
+`error` except `a11y-target-blank`.
 
 The ten photographs are **not MIT**: they are used under the
 [Unsplash License](https://unsplash.com/license), see
