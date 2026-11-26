@@ -1,0 +1,5 @@
+# The theme's tag page; its tag-overview seam renders the plugin's overview.
+tag_overview_layout: 'pages/tag.pug'
+# One tag namespace per language: a second language gets its own tag pages
+# under /<lang>/tags/ instead of sharing one cloud with this one.
+group_by_lang: true

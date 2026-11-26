@@ -1,0 +1,18 @@
+# Overrides of the theme's config/theme.yaml (deep-merged, arrays replaced).
+# Labels the legal checks of `nera check` recognise (Imprint, Privacy).
+footer_links:
+    - label: Imprint
+      href: /imprint.html
+    - label: Privacy
+      href: /privacy.html
+blog:
+    # Cards on the home after the boarding pass (the newest post)
+    home_posts: 5
+    # The home lists the newest four posts with this tag on a coral band
+    highlight_tag: Road notes
+# The about block on the home page, and the byline of every post that sets
+# no `author` of its own
+author:
+    name: Lena Sommer
+    bio: Bookseller from Freiburg, travelling slowly since 2014. I do not fly inside Europe, I always get a window seat, and I write everything down in a notebook before it ends up here.
+    href: /about.html

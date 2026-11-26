@@ -1,0 +1,5 @@
+# Plugins run alphabetically, except those listed here. plugin-search runs
+# last, so the tag pages plugin-tags adds are in the search index too.
+plugin-order:
+    - end:
+          - plugin-search

@@ -12,6 +12,7 @@
         "config",
         "pages",
         "theme",
+        ".neraignore",
         "!theme/assets/search-index*.json",
         "CREDITS.md",
         "CHANGELOG.md"

@@ -1,0 +1,45 @@
+# The sample photographs in theme/assets/images/ are from Unsplash, used under
+# the Unsplash License (https://unsplash.com/license), not MIT. Each file name
+# ends in the photo's id: the photographer's page is
+# https://unsplash.com/photos/<id>, and CREDITS.md in the package
+# @nera-static/starter-umwege lists all ten. Replace them with your own.
+lang: en
+name: Umwege
+robots: index,follow
+theme: umwege
+# Replace with your site's real address before you deploy: the feed and the
+# sitemap need absolute URLs, and without `origin` neither is written.
+origin: https://example.com
+
+translations:
+    en:
+        # The language's own name, shown by the theme's language switch
+        language_name: English
+        # Theme texts: the English keys work as they are; after
+        # `nera new --lang <code>`, translate the copied entry
+        Skip to content: Skip to content
+        Main navigation: Main navigation
+        Language: Language
+        Legal: Legal
+        Latest post: Latest post
+        Recent posts: Recent posts
+        All posts: All posts
+        Published: Published
+        Updated: Updated
+        Series: Series
+        Part: Part
+        About the author: About the author
+        Read more: Read more
+        # The heading over the home's passport stamps
+        Tags: Tags
+        # "n posts" per year in the archive
+        posts: posts
+        # footer_links labels (config/theme.yaml)
+        Imprint: Imprint
+        Privacy: Privacy
+        # plugin texts: plugin-page-pagination
+        Pagination: Pagination
+        # plugin texts: plugin-search
+        search_label: Search
+        search_placeholder: Search trips …
+        search_no_results: No results
