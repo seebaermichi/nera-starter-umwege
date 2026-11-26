@@ -81,3 +81,17 @@ describe('CREDITS.md', () => {
         expect(credits).not.toMatch(/unmodified/i)
     })
 })
+
+// `nera new` copies no CREDITS.md into a site, so the README carries the credits too (D8).
+describe('README.md', () => {
+    const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf-8')
+
+    it('links each photograph\'s Unsplash page and names the Unsplash License', () => {
+        for (const file of FIXTURE_PHOTOS) {
+            const id = file.replace(/-unsplash\.jpg$/, '').slice(-11)
+            expect(readme, file).toContain(`https://unsplash.com/photos/${id}`)
+        }
+        expect(readme).toContain('[Unsplash License](https://unsplash.com/license)')
+        expect(readme).toContain('`CREDITS.md`')
+    })
+})

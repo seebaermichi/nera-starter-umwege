@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { parse } from 'yaml'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf-8')
@@ -112,5 +113,23 @@ describe('package.json starter contract', () => {
         expect(license).toContain('does not cover the ten photographs')
         expect(license).toContain('https://unsplash.com/license')
         expect(license).toContain('CREDITS.md')
+    })
+})
+
+describe('README.md', () => {
+    const readme = read('README.md')
+
+    it('gives a German text for every key of translations.en, and only those', () => {
+        const section = readme.split('## German texts for `--lang de`')[1]
+        const block = section.match(/```yaml\n([\s\S]*?)```/)[1]
+        const de = parse(block).de
+        const en = parse(read('config/app.yaml')).translations.en
+        expect(Object.keys(de)).toEqual(Object.keys(en))
+        for (const [key, text] of Object.entries(de)) expect(text, key).not.toBe('')
+    })
+
+    it('ends with the First steps section nera new prints', () => {
+        const headings = [...readme.matchAll(/^## (.+)$/gm)].map((match) => match[1])
+        expect(headings.at(-1)).toBe('First steps')
     })
 })
