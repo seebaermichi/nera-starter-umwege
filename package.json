@@ -1,0 +1,70 @@
+{
+    "name": "@nera-static/starter-umwege",
+    "version": "1.0.0",
+    "description": "A ready-to-edit Nera travel blog on @nera-static/theme-umwege: fifteen sample posts with trip facts, places and a series, ten photographs, tags, an archive, search, an Atom feed, a sitemap, structured data, canonical links, responsive images, social links and imprint and privacy placeholders.",
+    "type": "module",
+    "scripts": {
+        "lint": "eslint .",
+        "test": "vitest",
+        "prepare": "husky"
+    },
+    "files": [
+        "config",
+        "pages",
+        "theme",
+        "!theme/assets/search-index*.json",
+        "CREDITS.md",
+        "CHANGELOG.md"
+    ],
+    "keywords": [
+        "nera",
+        "nera-starter",
+        "static-site-generator",
+        "starter",
+        "blog",
+        "travel-blog"
+    ],
+    "nera": {
+        "starter": {
+            "label": "Travel blog",
+            "description": "A ready-to-edit Nera travel blog on @nera-static/theme-umwege: fifteen sample posts with trip facts, places and a series, ten photographs, tags, an archive, search, an Atom feed, a sitemap, structured data, canonical links, responsive images, social links and imprint and privacy placeholders."
+        }
+    },
+    "author": "Michael Becker",
+    "license": "SEE LICENSE IN LICENSE",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/seebaermichi/nera-starter-umwege.git"
+    },
+    "bugs": {
+        "url": "https://github.com/seebaermichi/nera-starter-umwege/issues"
+    },
+    "homepage": "https://github.com/seebaermichi/nera-starter-umwege#readme",
+    "publishConfig": {
+        "access": "public"
+    },
+    "engines": {
+        "node": ">=22.12.0"
+    },
+    "dependencies": {
+        "@nera-static/plugin-canonical-links": "^2.2.4",
+        "@nera-static/plugin-feed": "^1.0.3",
+        "@nera-static/plugin-images": "^1.0.3",
+        "@nera-static/plugin-link-attributes": "^2.1.1",
+        "@nera-static/plugin-navigation": "^3.1.1",
+        "@nera-static/plugin-page-pagination": "^2.4.0",
+        "@nera-static/plugin-search": "^2.4.0",
+        "@nera-static/plugin-sitemap": "^1.1.1",
+        "@nera-static/plugin-social-media-links": "^2.3.1",
+        "@nera-static/plugin-structured-data": "^1.1.2",
+        "@nera-static/plugin-tags": "^3.4.1",
+        "@nera-static/theme-umwege": "^1.1.0"
+    },
+    "devDependencies": {
+        "@nera-static/nera": "^1.28.0",
+        "eslint": "^10.12.0",
+        "husky": "^9.1.7",
+        "vitest": "^5.0.3",
+        "yaml": "^2.9.1"
+    }
+}

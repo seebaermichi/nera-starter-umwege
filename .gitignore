@@ -41,3 +41,10 @@ plans/
 /.mcp.json
 /ROADMAP*.md
 /DESIGN-BRIEF.md
+
+# Build output of a local `nera build` in this folder stays out of git. npm pack
+# ignores these lines inside `files` folders: test/scaffold.test.js fails while
+# a search index sits in theme/assets/, so a hand publish cannot ship one.
+/public/
+/.nera-cache/
+/theme/assets/search-index*.json
