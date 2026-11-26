@@ -1,0 +1,64 @@
+# Read by Nera Pro only; Nera ignores this file.
+#
+# The editing schema of this travel blog: one entry per page type, keyed by the
+# page's `layout`, with a label for the editor and, per field, the label, a
+# help text and a `type` where Nera Pro could guess wrong from the value
+# (string, boolean, date, number, list, list_of_objects). Delete it, and the
+# editor learns the fields from your pages instead.
+page_types:
+    pages/post.pug:
+        label: Blog post
+        # Where "New page" puts a post
+        folder: posts
+        fields:
+            title: { label: Title }
+            description: { label: Description, help: "One or two sentences for search results and the text of the post's card" }
+            date: { label: Published on, type: date }
+            updated: { label: Updated on, type: date, help: Leave empty unless you changed the post after publishing it }
+            author: { label: Author, help: Leave empty to name the author of config/theme.yaml }
+            lead: { label: Lead, help: An introduction shown above the post }
+            tags: { label: Tags, type: list, help: "One entry per tag, e.g. Night trains. Each tag gets a page that lists its posts" }
+            series: { label: Series, help: "The same name in every post of a series, e.g. Alps without a car" }
+            series_part: { label: Part of the series, type: number, help: "1 for the first post of the series, 2 for the second, and so on" }
+            facts:
+                label: Facts
+                type: list_of_objects
+                help: "At most four figures, shown as tiles under the cover, e.g. Duration 9 days"
+                entries:
+                    label: { label: Label, help: "What the figure names, e.g. Duration" }
+                    value: { label: Value, help: "The figure itself, with its unit, e.g. 9 days, Night train or €780" }
+            location: { label: Location, help: "Where the trip went, e.g. Italy. Shown on the post, its card, its print and its archive row; add it to the tags too" }
+            image: { label: Cover image, help: "Its path on the site: /images/photo.jpg for theme/assets/images/photo.jpg. Add ?ratio=4:3&focus=50,33 to crop it" }
+            image_alt: { label: Cover image description, help: "Required when the post has a cover image: what the image shows, for readers who cannot see it" }
+            is_post: { label: Mark as article for search engines, type: boolean, help: "Keep it on: it gives the post a BlogPosting in its structured data" }
+            slug: { label: Slug, help: The same in every translation of the post }
+    pages/home.pug:
+        label: Home page
+        fields:
+            title: { label: Title, help: The heading of the home page }
+            lead: { label: Lead, help: "An introduction shown under the heading, beside the pictures of the newest posts" }
+            description: { label: Description, help: One or two sentences for search results }
+            archive_href: { label: Archive link, help: "Where the All posts link leads, e.g. /archive.html" }
+            slug: { label: Slug, help: The same in every translation of the page }
+    pages/archive.pug:
+        label: Archive
+        fields:
+            title: { label: Title }
+            lead: { label: Lead, help: An introduction shown under the title }
+            description: { label: Description, help: One or two sentences for search results }
+            slug: { label: Slug, help: The same in every translation of the page }
+    pages/search.pug:
+        label: Search
+        fields:
+            title: { label: Title }
+            lead: { label: Lead, help: "An introduction shown under the title, above the search field" }
+            description: { label: Description, help: One or two sentences for search results }
+            slug: { label: Slug, help: The same in every translation of the page }
+    pages/default.pug:
+        label: Page
+        fields:
+            title: { label: Title }
+            lead: { label: Lead, help: An introduction shown under the title }
+            description: { label: Description, help: One or two sentences for search results }
+            robots: { label: Search engines, help: "noindex,follow keeps the page out of search results, as on the imprint and privacy pages" }
+            slug: { label: Slug, help: The same in every translation of the page }
